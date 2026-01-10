@@ -1,10 +1,8 @@
 import axios from 'axios';
 
-// In production (Docker), we proxy /api to the backend via Nginx
-// In development, we use the VITE_API_URL or localhost:8000
-const API_URL = import.meta.env.PROD 
-  ? '/api' 
-  : (import.meta.env.VITE_API_URL || 'http://localhost:8000');
+// In production, we prioritize VITE_API_URL if set (e.g., on Netlify)
+// If not set, we fall back to '/api' for Docker reverse-proxy setups
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:8000');
 
 const client = axios.create({
   baseURL: API_URL,
