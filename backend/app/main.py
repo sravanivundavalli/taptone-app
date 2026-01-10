@@ -59,13 +59,14 @@ def health_check(db: Session = Depends(get_db)):
         return {"status": "unhealthy", "database": str(e)}, 503
 
 # CORS configuration
-origins = [
-    "http://localhost:5173",  # Vite dev
-    "http://localhost",       # Nginx production (docker-compose)
-    "http://localhost:80",    # Nginx production explicit
-    "https://taptone.vundavalli.me",
-    "https://taptone.netlify.app",
-]
+# We use an environment variable to define allowed origins in production,
+# with a fallback for local development.
+origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
+origins = [origin.strip() for origin in origins_str.split(",")]
+
+# Ensure internal docker/nginx origins are always allowed if needed
+if os.getenv("ENV") == "development":
+    origins.extend(["http://localhost", "http://localhost:80"])
 
 # Allow any origin in development if needed, but better to be explicit
 # You could also use os.getenv("ALLOWED_ORIGINS").split(",") 
