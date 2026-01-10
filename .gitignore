@@ -17,6 +17,7 @@ Thumbs.db
 infra/postgres_data/
 
 # Python
+
 __pycache__/
 *.py[cod]
 *$py.class
