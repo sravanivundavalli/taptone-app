@@ -41,6 +41,18 @@ def auto_seed_data(db: Session):
         return
 
     storage_dir = os.path.join(os.getcwd(), "music_storage")
+    initial_lib_dir = os.path.join(os.getcwd(), "initial_library")
+    
+    # If storage is empty and initial_library exists (inside image), bootstrap it
+    if os.path.exists(initial_lib_dir) and not os.listdir(storage_dir):
+        logger.info("Bootstrap: Copying files from image to volume...")
+        import shutil
+        for item in os.listdir(initial_lib_dir):
+            s = os.path.join(initial_lib_dir, item)
+            d = os.path.join(storage_dir, item)
+            shutil.copy2(s, d)
+        logger.info("Bootstrap: Files copied successfully.")
+
     logger.info(f"Checking music storage directory: {storage_dir}")
     logger.info(f"Directory exists: {os.path.exists(storage_dir)}")
     if os.path.exists(storage_dir):

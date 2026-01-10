@@ -15,11 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Copy music assets into the image so they are available by default
-# Note: If a volume is mounted to /app/music_storage, it will override this.
-COPY music_storage /app/music_storage
+# Create an 'initial_library' folder that stays inside the image
+# This acts as the source of truth for the first-time setup
+COPY music_storage /app/initial_library
 
-# Create storage directory if it doesn't exist
+# Create the actual storage directory (which will be a volume in production)
 RUN mkdir -p /app/music_storage
 
 # Expose port
