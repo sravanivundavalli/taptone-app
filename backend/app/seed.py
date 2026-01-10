@@ -42,8 +42,9 @@ def auto_seed_data(db: Session):
 
     storage_dir = os.path.join(os.getcwd(), "music_storage")
     logger.info(f"Checking music storage directory: {storage_dir}")
-    
+    logger.info(f"Directory exists: {os.path.exists(storage_dir)}")
     if os.path.exists(storage_dir):
+        logger.info(f"Directory contents: {os.listdir(storage_dir)}")
         files = [f for f in os.listdir(storage_dir) if f.endswith(".mp3")]
         logger.info(f"Found {len(files)} MP3 files in storage.")
         for file in files:
