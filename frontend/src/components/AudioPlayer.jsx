@@ -21,7 +21,8 @@ export const PlayerProvider = ({ children }) => {
       return;
     }
     setCurrentSong(song);
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+    // Use the same VITE_API_URL logic as the API client
+    const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:8000');
     audioRef.current.src = `${apiBase}/stream/${song.id}`;
     audioRef.current.play();
     setIsPlaying(true);
