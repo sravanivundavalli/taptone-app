@@ -37,13 +37,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/taptone-backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/taptone-backend:${{ steps.vars.outputs.sha_short }}
-
-      - name: Build and push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/taptone-frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/taptone-frontend:${{ steps.vars.outputs.sha_short }}

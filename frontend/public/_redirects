@@ -1,0 +1,5 @@
+/*
+  Redirect all requests to index.html for React Router
+  and handle API proxying if not using a reverse proxy on the backend host
+*/
+/*  /index.html  200
