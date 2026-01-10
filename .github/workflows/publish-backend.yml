@@ -37,3 +37,5 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/taptone-backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/taptone-backend:${{ steps.vars.outputs.sha_short }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
