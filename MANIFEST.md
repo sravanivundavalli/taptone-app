@@ -14,7 +14,7 @@ TapTone is an IoT music ecosystem designed to bridge digital music collections w
 * **Reverse Proxy:** **Nginx Proxy Manager (NPM)** handles SSL termination and routing.
 * **Backend:** FastAPI (Python 3.10+).
 * **Database:** PostgreSQL.
-* **Networking:** The API is accessible at `api.taptone.vundavalli.me`.
+* **Networking:** The API is accessible at `taptone-api.vundavalli.me`.
 
 ### B. Hardware (Player)
 

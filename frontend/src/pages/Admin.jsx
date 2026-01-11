@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Button, Box, TextField, Dialog, DialogTitle, DialogContent, DialogActions, TableSortLabel } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import client from '../api/client';
 
@@ -158,9 +159,9 @@ const Admin = () => {
                   <TableCell sx={{ color: 'white', opacity: 0.7 }}>{song.artist}</TableCell>
                   <TableCell sx={{ color: 'white', opacity: 0.7 }}>{song.genre}</TableCell>
                   <TableCell sx={{ color: 'white', opacity: 0.7 }}>${song.price.toFixed(2)}</TableCell>
-                  <TableCell>
+                   <TableCell>
                     <IconButton onClick={() => handleOpenEdit(song)} color="primary" sx={{ mr: 1 }}>
-                      <CloudUploadIcon sx={{ transform: 'rotate(180deg)' }} /> {/* Using upload icon as placeholder for edit */}
+                      <EditIcon />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(song.id)} color="error">
                       <DeleteIcon />
