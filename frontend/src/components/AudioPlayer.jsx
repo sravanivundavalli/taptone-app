@@ -5,6 +5,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import CloseIcon from '@mui/icons-material/Close';
 
 const PlayerContext = createContext();
 
@@ -37,8 +38,15 @@ export const PlayerProvider = ({ children }) => {
     setIsPlaying(!isPlaying);
   };
 
+  const stopPlayer = () => {
+    audioRef.current.pause();
+    audioRef.current.src = '';
+    setCurrentSong(null);
+    setIsPlaying(false);
+  };
+
   return (
-    <PlayerContext.Provider value={{ currentSong, isPlaying, playSong, togglePlay }}>
+    <PlayerContext.Provider value={{ currentSong, isPlaying, playSong, togglePlay, stopPlayer }}>
       {children}
       <AudioPlayer audioRef={audioRef} />
     </PlayerContext.Provider>
@@ -46,7 +54,7 @@ export const PlayerProvider = ({ children }) => {
 };
 
 const AudioPlayer = ({ audioRef }) => {
-  const { currentSong, isPlaying, togglePlay } = usePlayer();
+  const { currentSong, isPlaying, togglePlay, stopPlayer } = usePlayer();
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(70);
 
@@ -85,12 +93,28 @@ const AudioPlayer = ({ audioRef }) => {
         display: 'flex',
         alignItems: 'center',
         px: 4,
-        gap: 4
+        gap: 4,
+        zIndex: 1100
       }}
     >
+      <IconButton 
+        size="small" 
+        onClick={stopPlayer}
+        sx={{ 
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          color: 'white', 
+          opacity: 0.5, 
+          '&:hover': { opacity: 1, bgcolor: 'rgba(255,255,255,0.1)' } 
+        }}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+
       <Box sx={{ width: 300 }}>
-        <Typography variant="subtitle1" noWrap sx={{ color: 'white', fontWeight: 700 }}>{song.title}</Typography>
-        <Typography variant="caption" noWrap sx={{ color: 'white', opacity: 0.6 }}>{song.artist}</Typography>
+        <Typography variant="subtitle1" noWrap sx={{ color: 'white', fontWeight: 700 }}>{currentSong.title}</Typography>
+        <Typography variant="caption" noWrap sx={{ color: 'white', opacity: 0.6 }}>{currentSong.artist}</Typography>
       </Box>
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -110,7 +134,7 @@ const AudioPlayer = ({ audioRef }) => {
       {/* Volume */}
       <Box sx={{ width: '30%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
         <Stack spacing={2} direction="row" sx={{ width: 150 }} alignItems="center">
-          <VolumeUpIcon size="small" />
+          <VolumeUpIcon size="small" sx={{ opacity: 0.6 }} />
           <Slider size="small" value={volume} onChange={handleVolumeChange} sx={{ color: '#b3b3b3' }} />
         </Stack>
       </Box>
