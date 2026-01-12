@@ -89,7 +89,7 @@ const Navbar = () => {
               PaperProps={{
                 elevation: 0,
                 sx: {
-                  bgcolor: '#181818',
+                  bgcolor: '#0F0F0F',
                   color: 'white',
                   overflow: 'visible',
                   filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
@@ -109,7 +109,7 @@ const Navbar = () => {
                     right: 14,
                     width: 10,
                     height: 10,
-                    bgcolor: '#181818',
+                    bgcolor: '#0F0F0F',
                     transform: 'translateY(-50%) rotate(45deg)',
                     zIndex: 0,
                   },

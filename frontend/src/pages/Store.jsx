@@ -88,7 +88,7 @@ const Store = () => {
               sx={{ 
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '30px',
-                  bgcolor: '#282828',
+                  bgcolor: '#1A1A1A',
                   '& fieldset': { border: 'none' },
                   '&:hover fieldset': { border: 'none' },
                   '&.Mui-focused fieldset': { border: '1px solid white' },
@@ -105,16 +105,16 @@ const Store = () => {
                 minWidth: 120,
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '20px',
-                  bgcolor: '#282828',
+                  bgcolor: '#1A1A1A',
                   color: 'white',
                   '& fieldset': { border: 'none' }
                 },
                 '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' }
               }}
             >
-              <option value="title" style={{ backgroundColor: '#282828' }}>Title</option>
-              <option value="artist" style={{ backgroundColor: '#282828' }}>Artist</option>
-              <option value="genre" style={{ backgroundColor: '#282828' }}>Genre</option>
+              <option value="title" style={{ backgroundColor: '#1A1A1A' }}>Title</option>
+              <option value="artist" style={{ backgroundColor: '#1A1A1A' }}>Artist</option>
+              <option value="genre" style={{ backgroundColor: '#1A1A1A' }}>Genre</option>
             </TextField>
           </Box>
           
@@ -145,7 +145,7 @@ const Store = () => {
         }}>
           {loading ? (
             Array.from(new Array(8)).map((_, index) => (
-              <Box key={index} sx={{ height: 280, bgcolor: '#181818', borderRadius: 2, p: 2 }}>
+              <Box key={index} sx={{ height: 280, bgcolor: '#0F0F0F', borderRadius: 2, p: 2 }}>
                 <Skeleton variant="rectangular" height={140} sx={{ borderRadius: 1.5, mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }} />
                 <Skeleton variant="text" width="80%" sx={{ bgcolor: 'rgba(255,255,255,0.05)' }} />
                 <Skeleton variant="text" width="60%" sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }} />
@@ -159,10 +159,11 @@ const Store = () => {
               display: 'flex', 
               flexDirection: 'column',
               position: 'relative',
-              bgcolor: '#181818',
-              borderRadius: 2,
-              overflow: 'hidden',
-              '&:hover': { bgcolor: '#282828' },
+              bgcolor: '#0F0F0F',
+              borderRadius: 4,
+              border: '1px solid rgba(255,255,255,0.05)',
+              transition: 'all 0.3s ease',
+              '&:hover': { bgcolor: '#1A1A1A' },
               '&:hover .play-overlay': { opacity: 1 }
             }}>
               <Box sx={{ position: 'relative', height: 180, p: 2 }}>
@@ -198,7 +199,7 @@ const Store = () => {
                       width: 48,
                       height: 48,
                       boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
-                      '&:hover': { bgcolor: '#1ed760', transform: 'scale(1.05)' }
+                      '&:hover': { bgcolor: '#9575CD', transform: 'scale(1.05)' }
                     }}
                   >
                     <PlayArrowIcon sx={{ fontSize: 32 }} />
@@ -254,7 +255,7 @@ const Store = () => {
                     fontWeight: 700,
                     textTransform: 'none',
                     '&:hover': { 
-                      bgcolor: collectionIds.has(song.id) ? 'transparent' : '#1ed760',
+                      bgcolor: collectionIds.has(song.id) ? 'transparent' : '#9575CD',
                       transform: collectionIds.has(song.id) ? 'none' : 'scale(1.02)'
                     },
                     '&.Mui-disabled': {

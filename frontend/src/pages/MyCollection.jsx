@@ -159,7 +159,7 @@ const MyCollection = () => {
                   key={pl.id} 
                   sx={{ 
                     p: 2, 
-                    bgcolor: '#181818', 
+                    bgcolor: '#0F0F0F', 
                     borderRadius: 2,
                     border: '1px solid rgba(255,255,255,0.05)',
                     position: 'relative',
@@ -236,7 +236,7 @@ const MyCollection = () => {
             }}>
               {loading ? (
                 Array.from(new Array(6)).map((_, i) => (
-                  <Box key={i} sx={{ height: 260, bgcolor: '#181818', borderRadius: 2, p: 2 }}>
+                  <Box key={i} sx={{ height: 260, bgcolor: '#0F0F0F', borderRadius: 2, p: 2 }}>
                     <Skeleton variant="rectangular" height={130} sx={{ borderRadius: 1.5, mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }} />
                     <Skeleton variant="text" width="80%" sx={{ bgcolor: 'rgba(255,255,255,0.05)' }} />
                     <Skeleton variant="text" width="60%" sx={{ bgcolor: 'rgba(255,255,255,0.05)' }} />
@@ -249,12 +249,12 @@ const MyCollection = () => {
                   sx={{ 
                     height: 260,
                     cursor: 'pointer',
-                    border: selectedSongs.includes(song.id) ? '2px solid #1DB954' : '2px solid transparent',
-                    position: 'relative',
-                    bgcolor: '#181818',
+                    border: selectedSongs.includes(song.id) ? '2px solid #7E57C2' : '2px solid transparent',
                     borderRadius: 2,
-                    overflow: 'hidden',
-                    '&:hover': { bgcolor: '#282828' },
+                    bgcolor: '#0F0F0F',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    '&:hover': { bgcolor: '#1A1A1A' },
                     '&:hover .play-btn': { opacity: 1 }
                   }}
                 >
@@ -302,7 +302,7 @@ const MyCollection = () => {
                           width: 36,
                           height: 36,
                           boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
-                          '&:hover': { bgcolor: '#1ed760' }
+                          '&:hover': { bgcolor: '#9575CD' }
                         }}
                       >
                         <PlayArrowIcon fontSize="small" />

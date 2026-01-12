@@ -80,38 +80,30 @@ const AudioPlayer = ({ audioRef }) => {
         left: 0, 
         right: 0, 
         height: 90, 
-        bgcolor: '#181818', 
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        px: 3,
-        zIndex: 1200,
+        bgcolor: '#0F0F0F', 
+        borderTop: '1px solid rgba(255,255,255,0.05)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        px: 4,
+        gap: 4
       }}
-      elevation={10}
     >
-      {/* Song Info */}
-      <Box sx={{ width: '30%', display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ ml: 2 }}>
-          <Typography variant="body1" sx={{ fontWeight: 700 }}>{currentSong.title}</Typography>
-          <Typography variant="body2" color="textSecondary">{currentSong.artist}</Typography>
-        </Box>
+      <Box sx={{ width: 300 }}>
+        <Typography variant="subtitle1" noWrap sx={{ color: 'white', fontWeight: 700 }}>{song.title}</Typography>
+        <Typography variant="caption" noWrap sx={{ color: 'white', opacity: 0.6 }}>{song.artist}</Typography>
       </Box>
 
-      {/* Controls */}
-      <Box sx={{ width: '40%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <IconButton size="small"><SkipPreviousIcon /></IconButton>
-          <IconButton onClick={togglePlay} sx={{ bgcolor: 'white', color: 'black', '&:hover': { bgcolor: '#1DB954' } }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton onClick={togglePlay} sx={{ bgcolor: 'white', color: 'black', '&:hover': { bgcolor: '#7E57C2' } }}>
             {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
           </IconButton>
-          <IconButton size="small"><SkipNextIcon /></IconButton>
-        </Stack>
-        <Slider
+        </Box>
+        <Slider 
           size="small"
           value={progress}
           onChange={handleSeek}
-          sx={{ width: '100%', mt: 1, color: '#1DB954' }}
+          sx={{ width: '100%', mt: 1, color: '#7E57C2' }}
         />
       </Box>
 

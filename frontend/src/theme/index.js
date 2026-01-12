@@ -4,11 +4,14 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#1DB954', // Spotify Green
+      main: '#7E57C2', // Royal Amethyst (Muted Purple)
+    },
+    secondary: {
+      main: '#9575CD', // Muted Purple Accent
     },
     background: {
-      default: '#121212',
-      paper: '#181818',
+      default: '#000000',
+      paper: '#0F0F0F',
     },
     text: {
       primary: '#ffffff',
@@ -43,11 +46,11 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: '#181818',
+          backgroundColor: '#0F0F0F',
           borderRadius: 8,
           transition: 'background-color 0.3s ease',
           '&:hover': {
-            backgroundColor: '#282828',
+            backgroundColor: '#1A1A1A',
           },
         },
       },

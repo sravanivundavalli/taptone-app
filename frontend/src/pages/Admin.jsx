@@ -104,7 +104,7 @@ const Admin = () => {
           </Button>
         </Box>
 
-        <TableContainer component={Paper} sx={{ bgcolor: '#181818', borderRadius: 4 }}>
+        <TableContainer component={Paper} sx={{ bgcolor: '#0F0F0F', borderRadius: 4 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -154,7 +154,7 @@ const Admin = () => {
             <TableBody>
               {sortedSongs.map((song) => (
 
-                <TableRow key={song.id} sx={{ '&:hover': { bgcolor: '#282828' } }}>
+                <TableRow key={song.id} sx={{ '&:hover': { bgcolor: '#1A1A1A' } }}>
                   <TableCell sx={{ color: 'white' }}>{song.title}</TableCell>
                   <TableCell sx={{ color: 'white', opacity: 0.7 }}>{song.artist}</TableCell>
                   <TableCell sx={{ color: 'white', opacity: 0.7 }}>{song.genre}</TableCell>
@@ -173,7 +173,7 @@ const Admin = () => {
           </Table>
         </TableContainer>
 
-        <Dialog open={open} onClose={() => setOpen(false)} PaperProps={{ sx: { bgcolor: '#181818', color: 'white', borderRadius: 4, minWidth: 400 } }}>
+        <Dialog open={open} onClose={() => setOpen(false)} PaperProps={{ sx: { bgcolor: '#0F0F0F', color: 'white', borderRadius: 4, minWidth: 400 } }}>
           <DialogTitle sx={{ fontWeight: 800 }}>{editMode ? 'Edit Song' : 'Upload New Music'}</DialogTitle>
           <DialogContent>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>

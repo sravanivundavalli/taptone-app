@@ -28,7 +28,7 @@ const Login = () => {
     <Box sx={{ minHeight: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default', py: 8 }}>
       <Container maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 400 }}>
-          <Paper elevation={0} sx={{ p: 4, width: '100%', bgcolor: '#181818', borderRadius: 4, border: '1px solid rgba(255,255,255,0.05)' }}>
+          <Paper elevation={0} sx={{ p: 4, width: '100%', bgcolor: '#0F0F0F', borderRadius: 4, border: '1px solid rgba(255,255,255,0.05)' }}>
             <Typography component="h1" variant="h4" align="center" sx={{ mb: 4, fontWeight: 900, color: 'primary.main' }}>
               TapTone
             </Typography>

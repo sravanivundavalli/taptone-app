@@ -76,7 +76,7 @@ const TagManagement = () => {
         
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
-            <Paper sx={{ p: 3, bgcolor: '#181818', borderRadius: 2 }}>
+            <Paper sx={{ p: 3, bgcolor: '#0F0F0F', borderRadius: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>Register New Tag</Typography>
               <form onSubmit={handleRegisterTag}>
                 <TextField
@@ -119,13 +119,13 @@ const TagManagement = () => {
                   elevation={0}
                   sx={{ 
                     p: 3,
-                    bgcolor: '#181818', 
+                    bgcolor: '#0F0F0F', 
                     borderRadius: 4, 
                     border: '1px solid rgba(255,255,255,0.05)',
                     transition: 'all 0.3s ease',
                     '&:hover': {
-                      border: '1px solid rgba(29, 185, 84, 0.3)',
-                      bgcolor: '#222222',
+                      border: '1px solid rgba(187, 134, 252, 0.3)',
+                      bgcolor: '#1A1A1A',
                       transform: 'translateY(-2px)'
                     }
                   }}
