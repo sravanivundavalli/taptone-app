@@ -48,17 +48,12 @@ init_db()
 
 app = FastAPI(title="TapTone API")
 
-# CORS configuration
-origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5174,https://taptone-pi.vundavalli.me,https://taptone.vundavalli.me")
-origins = [origin.strip() for origin in origins_str.split(",")]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origin_regex="https://.*\.vundavalli\.me|http://localhost:.*",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
 MUSIC_STORAGE_PATH = os.path.join(os.getcwd(), "music_storage")
