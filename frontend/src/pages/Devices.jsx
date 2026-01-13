@@ -21,6 +21,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import DevicesIcon from '@mui/icons-material/Devices';
 import { useNotification } from '../context/NotificationContext';
+import client from '../api/client';
 
 const Devices = () => {
   const [devices, setDevices] = useState([]);
@@ -31,11 +32,8 @@ const Devices = () => {
 
   const fetchDevices = async () => {
     try {
-      const response = await fetch('/api/v1/my-devices');
-      if (response.ok) {
-        const data = await response.json();
-        setDevices(data);
-      }
+      const response = await client.get('/api/v1/my-devices');
+      setDevices(response.data);
     } catch (error) {
       console.error('Failed to fetch devices:', error);
     } finally {
@@ -56,20 +54,12 @@ const Devices = () => {
 
     setClaiming(true);
     try {
-      const response = await fetch(`/api/v1/devices/claim-verify?code=${claimCode.toUpperCase()}`, {
-        method: 'POST'
-      });
-      const data = await response.json();
-      
-      if (response.ok) {
-        showNotification('Device claimed successfully!', 'success');
-        setClaimCode('');
-        fetchDevices();
-      } else {
-        showNotification(data.detail || 'Failed to claim device', 'error');
-      }
+      const response = await client.post(`/api/v1/devices/claim-verify?code=${claimCode.toUpperCase()}`);
+      showNotification('Device claimed successfully!', 'success');
+      setClaimCode('');
+      fetchDevices();
     } catch (error) {
-      showNotification('Error connecting to server', 'error');
+      showNotification(error.response?.data?.detail || 'Failed to claim device', 'error');
     } finally {
       setClaiming(false);
     }
@@ -79,17 +69,11 @@ const Devices = () => {
     if (!window.confirm('Are you sure you want to remove this device?')) return;
 
     try {
-      const response = await fetch(`/api/v1/devices/${deviceId}`, {
-        method: 'DELETE'
-      });
-      if (response.ok) {
-        showNotification('Device removed', 'success');
-        fetchDevices();
-      } else {
-        showNotification('Failed to remove device', 'error');
-      }
+      await client.delete(`/api/v1/devices/${deviceId}`);
+      showNotification('Device removed', 'success');
+      fetchDevices();
     } catch (error) {
-      showNotification('Error connecting to server', 'error');
+      showNotification('Failed to remove device', 'error');
     }
   };
 
