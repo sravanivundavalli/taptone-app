@@ -49,7 +49,7 @@ init_db()
 app = FastAPI(title="TapTone API")
 
 # CORS configuration
-origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,https://taptone-pi.vundavalli.me")
+origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5174,https://taptone-pi.vundavalli.me,https://taptone.vundavalli.me")
 origins = [origin.strip() for origin in origins_str.split(",")]
 
 app.add_middleware(
@@ -298,6 +298,13 @@ def delete_tag(tag_id: str, current_user: models.User = Depends(dependencies.get
 @app.get("/playlists", response_model=List[schemas.Playlist])
 def read_my_playlists(current_user: models.User = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):
     return crud.get_playlists(db, user_id=current_user.id) # type: ignore
+
+@app.get("/playlists/{playlist_id}", response_model=schemas.Playlist)
+def read_playlist(playlist_id: int, db: Session = Depends(get_db)):
+    playlist = crud.get_playlist(db, playlist_id=playlist_id)
+    if not playlist:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    return playlist
 
 @app.post("/playlists", response_model=schemas.Playlist)
 def create_playlist(playlist: schemas.PlaylistCreate, current_user: models.User = Depends(dependencies.get_current_user), db: Session = Depends(get_db)):

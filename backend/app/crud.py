@@ -83,6 +83,9 @@ def get_tag_playlist(db: Session, tag_id: str):
 def get_playlists(db: Session, user_id: int):
     return db.query(models.Playlist).filter(models.Playlist.user_id == user_id).all()
 
+def get_playlist(db: Session, playlist_id: int):
+    return db.query(models.Playlist).filter(models.Playlist.id == playlist_id).first()
+
 def create_playlist(db: Session, playlist: schemas.PlaylistCreate, user_id: int):
     db_playlist = models.Playlist(name=playlist.name, user_id=user_id)
     db.add(db_playlist)

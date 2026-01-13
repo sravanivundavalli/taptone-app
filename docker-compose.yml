@@ -35,4 +35,11 @@ services:
       - "80:80"
     restart: always
 
+  kiosk:
+    build: ./frontend-kiosk
+    container_name: taptone-kiosk
+    ports:
+      - "5174:80"
+    restart: always
+
 # No named volumes needed as we are using bind mounts
