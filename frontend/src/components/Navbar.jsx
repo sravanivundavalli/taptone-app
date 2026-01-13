@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, IconButton, A
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logout from '@mui/icons-material/Logout';
 import Person from '@mui/icons-material/Person';
+import DevicesIcon from '@mui/icons-material/Devices';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -132,6 +133,18 @@ const Navbar = () => {
                 </Typography>
               </Box>
               <Divider sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <MenuItem onClick={() => { handleClose(); navigate('/profile'); }}>
+                <ListItemIcon>
+                  <Person fontSize="small" sx={{ color: 'white' }} />
+                </ListItemIcon>
+                My Profile
+              </MenuItem>
+              <MenuItem onClick={() => { handleClose(); navigate('/devices'); }}>
+                <ListItemIcon>
+                  <DevicesIcon fontSize="small" sx={{ color: 'white' }} />
+                </ListItemIcon>
+                My Devices
+              </MenuItem>
               <MenuItem onClick={handleLogout} sx={{ mt: 1 }}>
                 <ListItemIcon>
                   <Logout fontSize="small" sx={{ color: 'white' }} />

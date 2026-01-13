@@ -17,6 +17,7 @@ import Store from './pages/Store';
 import MyCollection from './pages/MyCollection';
 import TagManagement from './pages/TagManagement';
 import Devices from './pages/Devices';
+import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 
 const PrivateRoute = ({ children, adminOnly = false }) => {
@@ -50,6 +51,7 @@ const NavigationWrapper = () => {
           <Route path="/my-collection" element={<PrivateRoute><MyCollection /></PrivateRoute>} />
           <Route path="/tags" element={<PrivateRoute><TagManagement /></PrivateRoute>} />
           <Route path="/devices" element={<PrivateRoute><Devices /></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute adminOnly><Admin /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/store" />} />
         </Routes>
