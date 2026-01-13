@@ -140,12 +140,15 @@ const Store = () => {
 
         <Box sx={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-          gap: 3 
+          gridTemplateColumns: {
+            xs: 'repeat(auto-fill, minmax(140px, 1fr))',
+            sm: 'repeat(auto-fill, minmax(200px, 1fr))'
+          }, 
+          gap: { xs: 2, sm: 3 } 
         }}>
           {loading ? (
             Array.from(new Array(8)).map((_, index) => (
-              <Box key={index} sx={{ height: 280, bgcolor: '#0F0F0F', borderRadius: 2, p: 2 }}>
+              <Box key={index} sx={{ height: { xs: 220, sm: 280 }, bgcolor: '#121212', borderRadius: 2, p: 2 }}>
                 <Skeleton variant="rectangular" height={140} sx={{ borderRadius: 1.5, mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }} />
                 <Skeleton variant="text" width="80%" sx={{ bgcolor: 'rgba(255,255,255,0.05)' }} />
                 <Skeleton variant="text" width="60%" sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }} />
@@ -154,19 +157,19 @@ const Store = () => {
             ))
           ) : filteredSongs.map((song) => (
             <Card key={song.id} sx={{ 
-              height: 280, 
+              height: { xs: 230, sm: 280 }, 
               width: '100%',
               display: 'flex', 
               flexDirection: 'column',
               position: 'relative',
-              bgcolor: '#0F0F0F',
+              bgcolor: '#121212',
               borderRadius: 4,
               border: '1px solid rgba(255,255,255,0.05)',
               transition: 'all 0.3s ease',
-              '&:hover': { bgcolor: '#1A1A1A' },
+              '&:hover': { bgcolor: '#1C1C1C' },
               '&:hover .play-overlay': { opacity: 1 }
             }}>
-              <Box sx={{ position: 'relative', height: 180, p: 2 }}>
+              <Box sx={{ position: 'relative', height: { xs: 130, sm: 180 }, p: { xs: 1, sm: 2 } }}>
                 <Box
                   component="img"
                   src={song.image_url || `https://picsum.photos/seed/${song.title}/400/400`}
@@ -186,7 +189,7 @@ const Store = () => {
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    opacity: 0,
+                    opacity: { xs: 1, sm: 0 },
                     transition: 'opacity 0.3s ease',
                     background: 'linear-gradient(transparent, rgba(0,0,0,0.4))'
                   }}
@@ -196,44 +199,46 @@ const Store = () => {
                     sx={{ 
                       bgcolor: 'primary.main', 
                       color: 'black',
-                      width: 48,
-                      height: 48,
+                      width: { xs: 36, sm: 48 },
+                      height: { xs: 36, sm: 48 },
                       boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
                       '&:hover': { bgcolor: '#9575CD', transform: 'scale(1.05)' }
                     }}
                   >
-                    <PlayArrowIcon sx={{ fontSize: 32 }} />
+                    <PlayArrowIcon sx={{ fontSize: { xs: 24, sm: 32 } }} />
                   </IconButton>
                 </Box>
               </Box>
                 <CardContent sx={{ flexGrow: 1, px: 2, py: 0, display: 'flex', flexDirection: 'column' }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
                     <Typography 
-                      variant="body1" 
+                      variant="body2" 
                       title={song.title}
                       sx={{ 
                         fontWeight: 700, 
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        flexGrow: 1
+                        flexGrow: 1,
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' }
                       }}
                     >
                       {song.title}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 700, ml: 1 }}>
+                    <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 700, ml: 1, fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                       ${song.price.toFixed(2)}
                     </Typography>
                   </Box>
                   <Typography 
-                    variant="body2" 
+                    variant="caption" 
                     color="text.secondary" 
                     title={song.artist}
                     sx={{ 
-                      mb: 1.5,
+                      mb: { xs: 0.5, sm: 1.5 },
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
+                      whiteSpace: 'nowrap',
+                      fontSize: { xs: '0.65rem', sm: '0.75rem' }
                     }}
                   >
                     {song.artist}
@@ -244,14 +249,15 @@ const Store = () => {
                   size="small"
                   disabled={collectionIds.has(song.id)}
                   onClick={() => handlePurchase(song.id)}
-                  startIcon={collectionIds.has(song.id) ? <CheckCircleIcon /> : null}
+                  startIcon={collectionIds.has(song.id) ? <CheckCircleIcon sx={{ fontSize: '1rem !important' }} /> : null}
                   sx={{ 
                     borderRadius: '20px', 
                     bgcolor: collectionIds.has(song.id) ? 'transparent' : 'primary.main',
                     color: collectionIds.has(song.id) ? 'primary.main' : 'black',
                     mt: 'auto',
-                    mb: 1.5,
-                    fontSize: '0.85rem',
+                    mb: 1,
+                    fontSize: { xs: '0.65rem', sm: '0.85rem' },
+                    minHeight: { xs: 24, sm: 32 },
                     fontWeight: 700,
                     textTransform: 'none',
                     '&:hover': { 
@@ -264,7 +270,7 @@ const Store = () => {
                     }
                   }}
                 >
-                  {collectionIds.has(song.id) ? 'In Collection' : 'Buy Now'}
+                  {collectionIds.has(song.id) ? 'Owned' : 'Buy Now'}
                 </Button>
               </CardContent>
             </Card>

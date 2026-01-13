@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, IconButton, Avatar, Divider, ListItemIcon } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, IconButton, Avatar, Divider, ListItemIcon, useMediaQuery, useTheme } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logout from '@mui/icons-material/Logout';
-import Settings from '@mui/icons-material/Settings';
 import Person from '@mui/icons-material/Person';
 import { useAuth } from '../context/AuthContext';
 
@@ -10,6 +9,8 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -43,10 +44,10 @@ const Navbar = () => {
   });
 
   return (
-    <AppBar position="sticky" sx={{ mb: 0 }}>
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+    <AppBar position="sticky" sx={{ mb: 0, bgcolor: 'black' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', height: isMobile ? 48 : 64, minHeight: isMobile ? 48 : 64 }}>
         <Typography 
-          variant="h5" 
+          variant={isMobile ? "h6" : "h5"} 
           component={Link} 
           to="/" 
           sx={{ 
@@ -59,23 +60,27 @@ const Navbar = () => {
           TapTone
         </Typography>
         {user ? (
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Button component={Link} to="/store" sx={navButtonStyle('/store')}>Store</Button>
-            <Button component={Link} to="/my-collection" sx={navButtonStyle('/my-collection')}>Collection</Button>
-            <Button component={Link} to="/tags" sx={navButtonStyle('/tags')}>NFC Tags</Button>
-            {user.role === 'admin' && (
-              <Button component={Link} to="/admin" sx={navButtonStyle('/admin', true)}>Admin</Button>
+          <Box sx={{ display: 'flex', gap: isMobile ? 1 : 2, alignItems: 'center' }}>
+            {!isMobile && (
+              <>
+                <Button component={Link} to="/store" sx={navButtonStyle('/store')}>Store</Button>
+                <Button component={Link} to="/my-collection" sx={navButtonStyle('/my-collection')}>Collection</Button>
+                <Button component={Link} to="/tags" sx={navButtonStyle('/tags')}>NFC Tags</Button>
+                {user.role === 'admin' && (
+                  <Button component={Link} to="/admin" sx={navButtonStyle('/admin', true)}>Admin</Button>
+                )}
+              </>
             )}
             
             <IconButton
               onClick={handleClick}
               size="small"
-              sx={{ ml: 2 }}
+              sx={{ ml: isMobile ? 0 : 2 }}
               aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: '0.9rem', fontWeight: 700 }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', color: 'black', fontSize: '0.9rem', fontWeight: 700 }}>
                 {(user.first_name?.[0] || user.email?.[0] || 'U').toUpperCase()}
               </Avatar>
             </IconButton>
@@ -136,9 +141,9 @@ const Navbar = () => {
             </Menu>
           </Box>
         ) : (
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: isMobile ? 1 : 2 }}>
             <Button component={Link} to="/login" sx={navButtonStyle('/login')}>Login</Button>
-            <Button variant="contained" color="primary" component={Link} to="/signup" sx={{ borderRadius: '20px' }}>Signup</Button>
+            <Button variant="contained" color="primary" component={Link} to="/signup" sx={{ borderRadius: '20px', color: 'black' }}>Signup</Button>
           </Box>
         )}
       </Toolbar>

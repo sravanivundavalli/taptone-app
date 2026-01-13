@@ -72,33 +72,35 @@ const TagManagement = () => {
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100%', pt: 4, pb: 8 }}>
       <Container maxWidth="lg">
-        <Typography variant="h4" sx={{ mb: 4, color: 'white', fontWeight: 800 }}>NFC Tag Management</Typography>
+        <Typography variant="h4" sx={{ mb: { xs: 2, md: 4 }, color: 'white', fontWeight: 800, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>NFC Tag Management</Typography>
         
-        <Grid container spacing={4}>
+        <Grid container spacing={{ xs: 2, md: 4 }}>
           <Grid item xs={12} md={4}>
-            <Paper sx={{ p: 3, bgcolor: '#0F0F0F', borderRadius: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>Register New Tag</Typography>
+            <Paper sx={{ p: { xs: 2, md: 3 }, bgcolor: '#0F0F0F', borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, fontSize: { xs: '1rem', md: '1.25rem' } }}>Register New Tag</Typography>
               <form onSubmit={handleRegisterTag}>
                 <TextField
                   fullWidth
                   label="Physical Tag ID (UID)"
                   value={newTagId}
                   onChange={(e) => setNewTagId(e.target.value)}
-                  margin="normal"
+                  margin="dense"
                   required
+                  size="small"
                 />
                 <TextField
                   fullWidth
-                  label="Display Name (e.g. Melodies)"
+                  label="Display Name"
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
-                  margin="normal"
+                  margin="dense"
+                  size="small"
                 />
                 <Button 
                   type="submit" 
                   variant="contained" 
                   fullWidth 
-                  sx={{ mt: 3, borderRadius: '20px', py: 1, fontWeight: 700 }}
+                  sx={{ mt: 2, borderRadius: '20px', py: 1.5, fontWeight: 700, minHeight: 44 }}
                 >
                   Register Tag
                 </Button>
@@ -107,10 +109,10 @@ const TagManagement = () => {
           </Grid>
 
           <Grid item xs={12} md={8}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 3 } }}>
               {tags.length === 0 && (
-                <Box sx={{ textAlign: 'center', py: 8, opacity: 0.5 }}>
-                  <Typography>No tags registered yet. Use the form on the left to start.</Typography>
+                <Box sx={{ textAlign: 'center', py: 4, opacity: 0.5 }}>
+                  <Typography variant="body2">No tags registered yet.</Typography>
                 </Box>
               )}
               {tags.map((tag) => (
@@ -118,50 +120,48 @@ const TagManagement = () => {
                   key={tag.id} 
                   elevation={0}
                   sx={{ 
-                    p: 3,
+                    p: { xs: 2, md: 3 },
                     bgcolor: '#0F0F0F', 
-                    borderRadius: 4, 
+                    borderRadius: 3, 
                     border: '1px solid rgba(255,255,255,0.05)',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       border: '1px solid rgba(187, 134, 252, 0.3)',
-                      bgcolor: '#1A1A1A',
-                      transform: 'translateY(-2px)'
+                      bgcolor: '#1A1A1A'
                     }
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 4 }}>
+                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, gap: 2 }}>
                     <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 800, color: 'white', mb: 0.5 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, color: 'white', mb: 0.5, fontSize: { xs: '0.9rem', md: '1.1rem' } }}>
                         {tag.name || 'Unnamed Tag'}
                       </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography 
-                          variant="caption" 
-                          sx={{ 
-                            bgcolor: 'rgba(255,255,255,0.05)', 
-                            px: 1, 
-                            py: 0.5, 
-                            borderRadius: 1,
-                            fontFamily: 'monospace',
-                            color: 'primary.main'
-                          }}
-                        >
-                          UID: {tag.tag_id}
-                        </Typography>
-                      </Box>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          bgcolor: 'rgba(255,255,255,0.05)', 
+                          px: 1, 
+                          py: 0.5, 
+                          borderRadius: 1,
+                          fontFamily: 'monospace',
+                          color: 'primary.main',
+                          fontSize: '0.7rem'
+                        }}
+                      >
+                        UID: {tag.tag_id}
+                      </Typography>
                     </Box>
                     
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                      <FormControl sx={{ minWidth: 250 }}>
-                        <InputLabel id={`label-${tag.id}`}>Assign Playlist</InputLabel>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
+                      <FormControl fullWidth sx={{ minWidth: { xs: 'auto', sm: 200 } }}>
+                        <InputLabel id={`label-${tag.id}`} size="small">Assign Playlist</InputLabel>
                         <Select
                           labelId={`label-${tag.id}`}
                           label="Assign Playlist"
                           value={tag.playlist_id || ''}
                           onChange={(e) => handleLinkPlaylist(tag.tag_id, e.target.value)}
-                          size="medium"
-                          sx={{ borderRadius: 2 }}
+                          size="small"
+                          sx={{ borderRadius: 2, height: 44 }}
                         >
                           <MenuItem value=""><em>Unlinked</em></MenuItem>
                           {playlists.map(pl => (
@@ -175,11 +175,13 @@ const TagManagement = () => {
                         onClick={() => handleDeleteTag(tag.tag_id)}
                         sx={{ 
                           bgcolor: 'rgba(244, 67, 54, 0.05)', 
-                          p: 1.5,
+                          p: 1.25,
+                          minWidth: 44,
+                          minHeight: 44,
                           '&:hover': { bgcolor: 'rgba(244, 67, 54, 0.15)' } 
                         }}
                       >
-                        <DeleteOutlineIcon />
+                        <DeleteOutlineIcon fontSize="small" />
                       </IconButton>
                     </Box>
                   </Box>

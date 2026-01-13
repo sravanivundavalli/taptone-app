@@ -132,10 +132,10 @@ const MyCollection = () => {
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100%', pt: 4, pb: 8 }}>
       <Container maxWidth={false} sx={{ px: { xs: 2, md: 4 } }}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { md: '1fr 3fr' }, gap: 4 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 3fr' }, gap: { xs: 2, md: 4 } }}>
           
           {/* Left Column: Playlists */}
-          <Box>
+          <Box sx={{ order: { xs: 2, md: 1 } }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Typography variant="h5" sx={{ fontWeight: 800 }}>Playlists</Typography>
               <Button 
@@ -143,7 +143,7 @@ const MyCollection = () => {
                 size="small" 
                 startIcon={<AddIcon />}
                 onClick={() => setShowPlaylistDialog(true)}
-                sx={{ borderRadius: '20px' }}
+                sx={{ borderRadius: '20px', height: 40 }}
               >
                 New
               </Button>
@@ -163,22 +163,23 @@ const MyCollection = () => {
                     borderRadius: 2,
                     border: '1px solid rgba(255,255,255,0.05)',
                     position: 'relative',
+                    minHeight: 44,
                     '&:hover': { bgcolor: '#222' }
                   }}
                 >
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box onClick={() => setEditingPlaylist(editingPlaylist?.id === pl.id ? null : pl)} sx={{ cursor: 'pointer', flex: 1 }}>
+                    <Box onClick={() => setEditingPlaylist(editingPlaylist?.id === pl.id ? null : pl)} sx={{ cursor: 'pointer', flex: 1, py: 0.5 }}>
                       <Typography variant="body1" sx={{ fontWeight: 700 }}>{pl.name}</Typography>
                       <Typography variant="caption" sx={{ opacity: 0.6 }}>{pl.songs.length} songs</Typography>
                     </Box>
-                    <Box>
+                    <Box sx={{ display: 'flex' }}>
                       {selectedSongs.length > 0 && (
-                        <IconButton size="small" color="primary" onClick={() => handleUpdatePlaylistSongs(pl, null, 'add')}>
+                        <IconButton size="medium" color="primary" onClick={() => handleUpdatePlaylistSongs(pl, null, 'add')}>
                           <AddIcon fontSize="small" />
                         </IconButton>
                       )}
                       <IconButton 
-                        size="small" 
+                        size="medium" 
                         onClick={() => {
                           setPlaylistToRename(pl);
                           setRenameValue(pl.name);
@@ -188,7 +189,7 @@ const MyCollection = () => {
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
-                      <IconButton size="small" onClick={() => handleDeletePlaylist(pl.id)} sx={{ opacity: 0.3 }}>
+                      <IconButton size="medium" onClick={() => handleDeletePlaylist(pl.id)} sx={{ opacity: 0.3 }}>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </Box>
@@ -204,7 +205,7 @@ const MyCollection = () => {
                               primaryTypographyProps={{ variant: 'caption', fontWeight: 600 }}
                             />
                             <ListItemSecondaryAction>
-                              <IconButton size="small" onClick={() => handleUpdatePlaylistSongs(pl, song.id, 'remove')}>
+                              <IconButton size="medium" onClick={() => handleUpdatePlaylistSongs(pl, song.id, 'remove')}>
                                 <ClearIcon fontSize="inherit" />
                               </IconButton>
                             </ListItemSecondaryAction>
@@ -219,24 +220,28 @@ const MyCollection = () => {
           </Box>
 
           {/* Right Column: Collection Grid */}
-          <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-              <Typography variant="h4" sx={{ color: 'white', fontWeight: 800 }}>My Collection</Typography>
+          <Box sx={{ order: { xs: 1, md: 2 } }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: { xs: 2, md: 4 } }}>
+              <Typography variant="h4" sx={{ color: 'white', fontWeight: 800, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>My Collection</Typography>
               {selectedSongs.length > 0 && (
                 <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 700 }}>
-                  {selectedSongs.length} songs selected
+                  {selectedSongs.length} selected
                 </Typography>
               )}
             </Box>
             
             <Box sx={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', 
-              gap: 3 
+              gridTemplateColumns: {
+                xs: 'repeat(auto-fill, minmax(130px, 1fr))',
+                sm: 'repeat(auto-fill, minmax(160px, 1fr))',
+                md: 'repeat(auto-fill, minmax(180px, 1fr))'
+              }, 
+              gap: { xs: 1.5, md: 3 } 
             }}>
               {loading ? (
                 Array.from(new Array(6)).map((_, i) => (
-                  <Box key={i} sx={{ height: 260, bgcolor: '#0F0F0F', borderRadius: 2, p: 2 }}>
+                  <Box key={i} sx={{ height: { xs: 200, md: 260 }, bgcolor: '#0F0F0F', borderRadius: 2, p: 2 }}>
                     <Skeleton variant="rectangular" height={130} sx={{ borderRadius: 1.5, mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }} />
                     <Skeleton variant="text" width="80%" sx={{ bgcolor: 'rgba(255,255,255,0.05)' }} />
                     <Skeleton variant="text" width="60%" sx={{ bgcolor: 'rgba(255,255,255,0.05)' }} />
@@ -247,18 +252,17 @@ const MyCollection = () => {
                   key={song.id}
                   onClick={() => handleToggleSong(song.id)}
                   sx={{ 
-                    height: 260,
+                    height: { xs: 210, md: 260 },
                     cursor: 'pointer',
                     border: selectedSongs.includes(song.id) ? '2px solid #7E57C2' : '2px solid transparent',
                     borderRadius: 2,
                     bgcolor: '#0F0F0F',
-                    cursor: 'pointer',
                     transition: 'all 0.2s',
                     '&:hover': { bgcolor: '#1A1A1A' },
                     '&:hover .play-btn': { opacity: 1 }
                   }}
                 >
-                  <Box sx={{ position: 'relative', height: 160, p: 2 }}>
+                  <Box sx={{ position: 'relative', height: { xs: 120, md: 160 }, p: { xs: 1, md: 2 } }}>
                     <Box
                       component="img"
                       src={song.image_url || `https://picsum.photos/seed/${song.title}/400/400`}
@@ -269,7 +273,7 @@ const MyCollection = () => {
                         borderRadius: 1.5,
                       }}
                     />
-                    <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                    <Box sx={{ position: 'absolute', top: { xs: 10, md: 16 }, right: { xs: 10, md: 16 } }}>
                       <Checkbox 
                         checked={selectedSongs.includes(song.id)}
                         sx={{ 
@@ -285,9 +289,9 @@ const MyCollection = () => {
                       className="play-btn"
                       sx={{ 
                         position: 'absolute', 
-                        bottom: 24, 
-                        right: 24,
-                        opacity: 0,
+                        bottom: { xs: 12, md: 24 }, 
+                        right: { xs: 12, md: 24 },
+                        opacity: { xs: 1, md: 0 },
                         transition: 'opacity 0.2s'
                       }}
                     >
@@ -299,8 +303,8 @@ const MyCollection = () => {
                         sx={{ 
                           bgcolor: 'primary.main', 
                           color: 'black',
-                          width: 36,
-                          height: 36,
+                          width: { xs: 32, md: 44 },
+                          height: { xs: 32, md: 44 },
                           boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
                           '&:hover': { bgcolor: '#9575CD' }
                         }}
@@ -316,6 +320,7 @@ const MyCollection = () => {
                       sx={{ 
                         fontWeight: 700, 
                         mb: 0.5,
+                        fontSize: { xs: '0.75rem', md: '0.875rem' },
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap'
@@ -328,6 +333,7 @@ const MyCollection = () => {
                       color="text.secondary" 
                       title={song.artist}
                       sx={{ 
+                        fontSize: { xs: '0.65rem', md: '0.75rem' },
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
