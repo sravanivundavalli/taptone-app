@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline, Box, BottomNavigation, BottomNavigationActi
 import StoreIcon from '@mui/icons-material/Storefront';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import NfcIcon from '@mui/icons-material/Nfc';
+import DevicesIcon from '@mui/icons-material/Devices';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import theme from './theme';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -15,6 +16,7 @@ import Signup from './pages/Signup';
 import Store from './pages/Store';
 import MyCollection from './pages/MyCollection';
 import TagManagement from './pages/TagManagement';
+import Devices from './pages/Devices';
 import Admin from './pages/Admin';
 
 const PrivateRoute = ({ children, adminOnly = false }) => {
@@ -47,6 +49,7 @@ const NavigationWrapper = () => {
           <Route path="/store" element={<PrivateRoute><Store /></PrivateRoute>} />
           <Route path="/my-collection" element={<PrivateRoute><MyCollection /></PrivateRoute>} />
           <Route path="/tags" element={<PrivateRoute><TagManagement /></PrivateRoute>} />
+          <Route path="/devices" element={<PrivateRoute><Devices /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute adminOnly><Admin /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/store" />} />
         </Routes>
@@ -72,6 +75,13 @@ const NavigationWrapper = () => {
               icon={<LibraryMusicIcon />} 
               component={Link} 
               to="/my-collection" 
+            />
+            <BottomNavigationAction 
+              label="Devices" 
+              value="/devices" 
+              icon={<DevicesIcon />} 
+              component={Link} 
+              to="/devices" 
             />
             <BottomNavigationAction 
               label="Tags" 

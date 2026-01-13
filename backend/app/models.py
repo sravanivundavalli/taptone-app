@@ -31,6 +31,7 @@ class User(Base):
     collection = relationship("Song", secondary=user_songs, back_populates="owners")
     nfc_tags = relationship("NFCTag", back_populates="user")
     playlists = relationship("Playlist", back_populates="user")
+    devices = relationship("Device", back_populates="user")
 
 class Song(Base):
     __tablename__ = "songs"
@@ -68,3 +69,35 @@ class NFCTag(Base):
     
     user = relationship("User", back_populates="nfc_tags")
     playlist = relationship("Playlist", back_populates="nfc_tags")
+
+class Device(Base):
+    __tablename__ = "devices"
+
+    id = Column(String, primary_key=True, index=True) # UUID or generated ID
+    name = Column(String, nullable=True)
+    account_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    is_active = Column(Boolean, default=True)
+    last_seen = Column(Float, nullable=True) # Timestamp
+
+    user = relationship("User", back_populates="devices")
+    commands = relationship("Command", back_populates="device", cascade="all, delete-orphan")
+
+class Command(Base):
+    __tablename__ = "commands"
+
+    id = Column(Integer, primary_key=True, index=True)
+    device_id = Column(String, ForeignKey("devices.id"))
+    command_type = Column(String) # LOAD_PLAYLIST, PLAY, PAUSE, NEXT, PREV, SET_VOLUME
+    payload = Column(String, nullable=True) # JSON string
+    status = Column(String, default="pending") # pending, acked
+    created_at = Column(Float)
+
+    device = relationship("Device", back_populates="commands")
+
+class ClaimCode(Base):
+    __tablename__ = "claim_codes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    code = Column(String, unique=True, index=True)
+    device_id = Column(String, ForeignKey("devices.id"))
+    expires_at = Column(Float)

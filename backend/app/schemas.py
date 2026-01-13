@@ -71,3 +71,33 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+class DeviceBase(BaseModel):
+    id: str
+    name: Optional[str] = None
+
+class Device(DeviceBase):
+    account_id: Optional[int] = None
+    is_active: bool
+    last_seen: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+class CommandBase(BaseModel):
+    command_type: str
+    payload: Optional[str] = None
+
+class Command(CommandBase):
+    id: int
+    device_id: str
+    status: str
+    created_at: float
+
+    class Config:
+        from_attributes = True
+
+class ClaimCode(BaseModel):
+    code: str
+    device_id: str
+    expires_at: float
