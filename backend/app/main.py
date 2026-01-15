@@ -185,6 +185,22 @@ def ack_command(command_id: int, db: Session = Depends(get_db)):
     crud.ack_command(db, command_id)
     return {"status": "ok"}
 
+@app.get("/api/v1/recommendations", response_model=List[schemas.Song])
+def get_recommendations(
+    device_id: str, 
+    genre: str, 
+    exclude_ids: str, # Comma separated
+    db: Session = Depends(get_db)
+):
+    device = crud.get_device(db, device_id)
+    if not device or device.account_id is None:
+        raise HTTPException(status_code=404, detail="Device or account not found")
+    
+    exclude_list = [int(i) for i in exclude_ids.split(",") if i]
+    # Use getattr to avoid type check errors with SQLAlchemy columns
+    user_id = int(getattr(device, 'account_id'))
+    return crud.get_recommendations(db, user_id, genre, exclude_list)
+
 # Music Store Endpoints
 @app.get("/songs", response_model=List[schemas.Song])
 def read_songs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

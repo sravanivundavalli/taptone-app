@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, CircularProgress, Container, Paper, ThemeProvider, createTheme, CssBaseline, Button, IconButton } from '@mui/material';
-import { PlayArrow, Pause, SkipNext, SkipPrevious, VolumeUp, VolumeDown } from '@mui/icons-material';
+import { PlayArrow, Pause, SkipNext, SkipPrevious, VolumeUp, VolumeDown, Repeat, Add, Check } from '@mui/icons-material';
 import client from './api/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -28,8 +28,12 @@ const App = () => {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isLooping, setIsLooping] = useState(localStorage.getItem('kiosk_loop') === 'true');
+  const [savedSongIds, setSavedSongIds] = useState([]);
   
   const audioRef = useRef(null);
+  const activeSongRef = useRef(null);
+  const listContainerRef = useRef(null);
   const playlistRef = useRef(null);
   const currentSongRef = useRef(null);
 
@@ -47,6 +51,15 @@ const App = () => {
       checkRegistration();
     }
   }, [deviceId, needsGesture]);
+
+  useEffect(() => {
+    if (activeSongRef.current && listContainerRef.current) {
+      activeSongRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [currentSong]);
 
   const handleStart = () => {
     setNeedsGesture(false);
@@ -211,15 +224,100 @@ const App = () => {
     }
   };
 
-  const playNext = () => {
+  const toggleLoop = () => {
+    const newVal = !isLooping;
+    setIsLooping(newVal);
+    localStorage.setItem('kiosk_loop', newVal.toString());
+  };
+
+  const playNext = async () => {
     const pl = playlistRef.current;
     const song = currentSongRef.current;
     console.log("Next track requested. Current pl:", !!pl, "Current song:", !!song);
     
     if (!pl || !song) return;
     const idx = pl.songs.findIndex(s => s.id === song.id);
-    const nextIdx = (idx + 1) % pl.songs.length;
-    playSong(pl.songs[nextIdx]);
+    
+    if (idx === pl.songs.length - 1) {
+      // Last song in playlist
+      if (isLooping) {
+        // Loop back to start
+        playSong(pl.songs[0]);
+      } else {
+        // Smart Discovery
+        await fetchRecommendations(song);
+      }
+    } else {
+      // Normal next song
+      playSong(pl.songs[idx + 1]);
+    }
+  };
+
+  const fetchRecommendations = async (lastSong) => {
+    try {
+      const excludeIds = playlistRef.current.songs.map(s => s.id).join(',');
+      const res = await client.get(`/api/v1/recommendations`, {
+        params: {
+          device_id: deviceId,
+          genre: lastSong.genre,
+          exclude_ids: excludeIds
+        }
+      });
+      
+      const recs = res.data.map(s => ({ ...s, isDiscovery: true }));
+      
+      if (recs.length > 0) {
+        const updatedPlaylist = {
+          ...playlistRef.current,
+          songs: [...playlistRef.current.songs, ...recs]
+        };
+        setPlaylist(updatedPlaylist);
+        playlistRef.current = updatedPlaylist;
+        // Play the first recommendation
+        playSong(recs[0]);
+      } else {
+        // Fallback to loop if no recommendations
+        playSong(playlistRef.current.songs[0]);
+      }
+    } catch (err) {
+      console.error('Recommendation fetch error', err);
+      playSong(playlistRef.current.songs[0]);
+    }
+  };
+
+  const handleAddSongToPlaylist = async (song) => {
+    if (!playlist) return;
+    try {
+      // Get latest playlist songs from server to avoid race conditions
+      const res = await client.get(`/playlists/${playlist.id}`);
+      const latestPlaylist = res.data;
+      
+      const currentIds = latestPlaylist.songs.map(s => s.id);
+      if (!currentIds.includes(song.id)) {
+        await client.put(`/playlists/${playlist.id}/songs`, [...currentIds, song.id]);
+        setSavedSongIds(prev => [...prev, song.id]);
+      }
+    } catch (err) {
+      console.error('Error adding song to current playlist', err);
+    }
+  };
+
+  const handleAddAllRecommended = async () => {
+    if (!playlist) return;
+    try {
+      // Get latest playlist songs from server
+      const res = await client.get(`/playlists/${playlist.id}`);
+      const latestPlaylist = res.data;
+      
+      const discoverySongs = playlist.songs.filter(s => s.isDiscovery);
+      const currentIds = latestPlaylist.songs.map(s => s.id);
+      const newIds = [...new Set([...currentIds, ...discoverySongs.map(s => s.id)])];
+      
+      await client.put(`/playlists/${playlist.id}/songs`, newIds);
+      setSavedSongIds(prev => [...new Set([...prev, ...discoverySongs.map(s => s.id)])]);
+    } catch (err) {
+      console.error('Error adding all songs to current playlist', err);
+    }
   };
 
   const playPrev = () => {
@@ -353,14 +451,30 @@ const App = () => {
                   src={currentSong.image_url} 
                   sx={{ width: 140, height: 140, borderRadius: 3, mb: 1, boxShadow: '0 10px 20px rgba(0,0,0,0.8)' }} 
                 />
-                <Typography variant="body1" sx={{ fontWeight: 900, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {currentSong.title}
-                </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.6, display: 'block', mb: 1 }}>
-                  {currentSong.artist}
-                </Typography>
+                 <Typography variant="body1" sx={{ fontWeight: 900, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                   {currentSong.title}
+                 </Typography>
+                 <Typography variant="caption" sx={{ opacity: 0.6, display: 'block', mb: 0.5 }}>
+                   {currentSong.artist}
+                 </Typography>
+                 {playlist && (
+                   <Typography variant="caption" sx={{ 
+                     display: 'inline-block', 
+                     bgcolor: 'rgba(126, 87, 194, 0.2)', 
+                     px: 1, 
+                     py: 0.1, 
+                     borderRadius: 1, 
+                     fontSize: '0.55rem', 
+                     fontWeight: 700,
+                     color: 'primary.main',
+                     mb: 1,
+                     letterSpacing: 0.5
+                   }}>
+                     {playlist.name.toUpperCase()}
+                   </Typography>
+                 )}
 
-                <Box sx={{ width: '100%', height: 4, bgcolor: 'rgba(255,255,255,0.1)', borderRadius: 2, mb: 0.5, position: 'relative' }}>
+                 <Box sx={{ width: '100%', height: 4, bgcolor: 'rgba(255,255,255,0.1)', borderRadius: 2, mb: 0.5, position: 'relative' }}>
                   <Box sx={{ width: `${progress}%`, height: '100%', bgcolor: 'primary.main', borderRadius: 2, transition: 'width 0.2s linear' }} />
                 </Box>
                 <Typography variant="caption" sx={{ display: 'block', mb: 1, opacity: 0.5, fontSize: '0.6rem', textAlign: 'right', fontWeight: 700 }}>
@@ -397,24 +511,116 @@ const App = () => {
               <Box sx={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 {playlist && (
                   <Box sx={{ bgcolor: 'rgba(0,0,0,0.4)', p: 1.5, borderRadius: 2, border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <Typography variant="caption" sx={{ display: 'block', mb: 1, opacity: 0.5, fontWeight: 800, letterSpacing: 1 }}>UP NEXT</Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, gap: 1 }}>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          opacity: 0.5, 
+                          fontWeight: 800, 
+                          letterSpacing: 1,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          flex: 1
+                        }}
+                      >
+                        {playlist.name.toUpperCase()}
+                      </Typography>
+                      <IconButton size="small" onClick={toggleLoop} sx={{ p: 0, color: isLooping ? 'primary.main' : 'white', opacity: isLooping ? 1 : 0.3 }}>
+                        <Repeat sx={{ fontSize: '1rem' }} />
+                      </IconButton>
+                    </Box>
+                    <Box 
+                      ref={listContainerRef}
+                      sx={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: 0.5, 
+                        maxHeight: '180px', 
+                        overflowY: 'auto',
+                        pr: 1,
+                        '&::-webkit-scrollbar': { width: '4px' },
+                        '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(255,255,255,0.1)', borderRadius: '4px' }
+                      }}
+                    >
                       {playlist.songs.map((song, idx) => {
                         const isCurrent = song.id === currentSong.id;
+                        const isFirstDiscovery = song.isDiscovery && (idx === 0 || !playlist.songs[idx - 1].isDiscovery);
+                        
                         return (
-                          <Typography key={song.id} variant="caption" sx={{ 
-                            opacity: isCurrent ? 1 : 0.4,
-                            fontWeight: isCurrent ? 800 : 400,
-                            color: isCurrent ? 'primary.main' : 'inherit',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1
-                          }}>
-                            <span style={{ minWidth: '12px' }}>{idx + 1}.</span> {song.title}
-                          </Typography>
+                          <React.Fragment key={`${song.id}-${idx}`}>
+                            {isFirstDiscovery && (
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, mb: 0.5 }}>
+                                <Typography variant="caption" sx={{ 
+                                  color: 'primary.main', 
+                                  fontWeight: 900, 
+                                  fontSize: '0.55rem', 
+                                  letterSpacing: 1
+                                }}>
+                                  RECOMMENDED
+                                </Typography>
+                                <Button 
+                                  size="small" 
+                                  onClick={handleAddAllRecommended}
+                                  sx={{ 
+                                    fontSize: '0.5rem', 
+                                    p: 0, 
+                                    minWidth: 0, 
+                                    color: 'primary.main',
+                                    fontWeight: 900
+                                  }}
+                                >
+                                  + ADD ALL
+                                </Button>
+                              </Box>
+                            )}
+                            <Typography 
+                              ref={isCurrent ? activeSongRef : null}
+                              variant="caption" 
+                              sx={{ 
+                                opacity: isCurrent ? 1 : 0.4,
+                                fontWeight: isCurrent ? 800 : 400,
+                                color: isCurrent ? 'primary.main' : 'inherit',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1,
+                                bgcolor: isCurrent ? 'rgba(126, 87, 194, 0.1)' : 'transparent',
+                                borderRadius: 1,
+                                px: 0.5,
+                                py: 0.2
+                              }}
+                            >
+                              <span style={{ minWidth: '12px' }}>{idx + 1}.</span> 
+                              <Box sx={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>{song.title}</Box>
+                              {isCurrent && (
+                                <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '10px', mb: '2px' }}>
+                                  {[1, 2, 3].map((i) => (
+                                    <Box key={i} sx={{ 
+                                      width: '2px', 
+                                      bgcolor: 'primary.main', 
+                                      animation: `barGrowth ${0.5 + i*0.1}s ease-in-out infinite alternate`,
+                                      '@keyframes barGrowth': { '0%': { height: '3px' }, '100%': { height: '10px' } }
+                                    }} />
+                                  ))}
+                                </Box>
+                              )}
+                              {song.isDiscovery && (
+                                <>
+                                  <Typography variant="caption" sx={{ fontSize: '0.6rem', ml: 0.5 }}>✨</Typography>
+                                  <IconButton 
+                                    size="small" 
+                                    onClick={() => handleAddSongToPlaylist(song)}
+                                    sx={{ p: 0, ml: 0.5, color: savedSongIds.includes(song.id) ? '#4CAF50' : 'white' }}
+                                  >
+                                    {savedSongIds.includes(song.id) ? <Check sx={{ fontSize: '0.8rem' }} /> : <Add sx={{ fontSize: '0.8rem' }} />}
+                                  </IconButton>
+                                </>
+                              )}
+                            </Typography>
+                          </React.Fragment>
                         );
                       })}
                     </Box>

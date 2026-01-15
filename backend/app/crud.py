@@ -223,3 +223,21 @@ def verify_claim_code(db: Session, code: str, user_id: int):
             db.commit()
             return db_device
     return None
+
+def get_recommendations(db: Session, user_id: int, genre: str, exclude_ids: List[int], limit: int = 5):
+    import random
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return []
+    
+    # Filter collection for genre match
+    pool = [s for s in user.collection if s.genre.lower() == genre.lower() and s.id not in exclude_ids]
+    
+    # If not enough genre matches, add other songs from collection
+    if len(pool) < limit:
+        others = [s for s in user.collection if s.genre.lower() != genre.lower() and s.id not in exclude_ids]
+        pool.extend(others)
+    
+    # Randomize and limit
+    random.shuffle(pool)
+    return pool[:limit]
